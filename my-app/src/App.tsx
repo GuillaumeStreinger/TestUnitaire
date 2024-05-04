@@ -1,23 +1,71 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import "./App.css";
+import { sendGetRequest } from "./lib/http";
+
+type Article = {
+  id: string;
+  name: string;
+  priceEur: number;
+};
 
 function App() {
+  const [articles, setArticles] = useState<
+    (Article & { quantity: number })[] | null
+  >(null);
+
+  const fetchArticles = async () => {
+    const { articles: fetchedArticles } = await sendGetRequest("/api/articles");
+    setArticles(
+      (fetchedArticles as Article[]).map((article) => ({
+        ...article,
+        quantity: 0,
+      }))
+    );
+  };
+
+  const setArticleQuantity = (id: string, quantity: number) => {
+    if (articles) {
+      setArticles(
+        articles?.map((article) =>
+          article.id === id ? { ...article, quantity } : article
+        )
+      );
+    }
+  };
+
+  useEffect(() => {
+    fetchArticles();
+  }, []);
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        {articles ? (
+          <ul>
+            {articles.map((article) => (
+              <li key={article.id}>
+                <span>{article.name}</span>
+                <button
+                  onClick={() => {
+                    setArticleQuantity(article.id, article.quantity - 1);
+                  }}
+                >
+                  -
+                </button>
+                {article.quantity}
+                <button
+                  onClick={() => {
+                    setArticleQuantity(article.id, article.quantity + 1);
+                  }}
+                >
+                  +
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          "Chargement…"
+        )}
       </header>
     </div>
   );

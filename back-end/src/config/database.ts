@@ -4,10 +4,10 @@ import { Article } from "../Article";
 import { Order } from "../Order";
 import { ArticleInOrder } from "../ArticleInOrder";
 
-export const getNewDataSource = async () => {
+export const getNewDataSource = async (database: string) => {
   const dataSource = new DataSource({
     type: "sqlite",
-    database: ":memory:",
+    database,
     entities: [Article, Order, ArticleInOrder],
     synchronize: true,
   });

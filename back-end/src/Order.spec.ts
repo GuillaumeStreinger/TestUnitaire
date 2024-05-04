@@ -10,7 +10,7 @@ jest.mock("./lib/email");
 let dataSource: DataSource;
 
 beforeEach(async () => {
-  dataSource = await getNewDataSource();
+  dataSource = await getNewDataSource(":memory:");
   await Article.createBaseArticles();
 });
 
