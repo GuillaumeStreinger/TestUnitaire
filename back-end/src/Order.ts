@@ -103,4 +103,18 @@ import {
       }, {} as Record<string, number>);
     }
 
+    async getOrderDetails() {
+      return {
+        dateCreated: this.date,
+        articles: this.articlesInOrder.map(a => ({
+          name: a.article.name,
+          price: a.article.priceEur,
+          quantity: a.quantity,
+        })),
+        totalWithoutShipping: this.getTotalPrice(),
+        shippingCost: this.getShippingCost(),
+        totalWithShipping: this.getTotalPrice() + this.getShippingCost(),
+        submitted: this.submitted,
+      };
+    }
   }
