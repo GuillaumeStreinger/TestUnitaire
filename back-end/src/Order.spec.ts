@@ -156,3 +156,18 @@ describe("getOrderCost", () => {
     });
   });
 });
+
+describe("Order Statistics", () => {
+  beforeAll(async () => {
+    const dataSource = await getNewDataSource("./sqlite.db");
+    // Initialiser la base de données et ajouter des données de test
+  });
+
+  it("calculates monthly order statistics correctly", async () => {
+    const stats = await Order.getOrderStatistics();
+    expect(stats).toEqual({
+      "2023-5": 240,
+      "2023-6": 120,
+    });
+  });
+});

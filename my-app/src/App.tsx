@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import { sendGetRequest } from "./lib/http";
+import OrderStats from "./components/OrderStats";
 
 type Article = {
   id: string;
@@ -66,6 +67,7 @@ function App() {
         ) : (
           "Chargement…"
         )}
+        <OrderStats />
       </header>
     </div>
   );

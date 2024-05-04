@@ -22,6 +22,7 @@ import {
   
     @Column({ default: false })
     submitted!: boolean;
+    date!: Date;
   
     static async createOrder(
       articlesInOrder: { articleId: string; quantity: number }[]
@@ -91,4 +92,15 @@ import {
     async deleteOrder() {
       await Order.delete({ id: this.id });
     }
+
+    static async getOrderStatistics(): Promise<Record<string, number>> {
+      const orders = await this.find({ relations: ["articlesInOrder", "articlesInOrder.article"] });
+      return orders.reduce((acc, order) => {
+        const month = `${order.date.getFullYear()}-${order.date.getMonth() + 1}`;
+        const totalPrice = order.articlesInOrder.reduce((total, { article, quantity }) => total + article.priceEur * quantity, 0);
+        acc[month] = (acc[month] || 0) + totalPrice;
+        return acc;
+      }, {} as Record<string, number>);
+    }
+
   }
